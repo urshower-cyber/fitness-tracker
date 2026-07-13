@@ -494,6 +494,12 @@ export default function FitnessTracker() {
               ＋ {sessions.length>0?"繼續新增訓練":"開始記錄訓練"}
             </button>
           )}
+          {sessions.length>0&&isToday&&(
+            <button style={{...css.mainBtn("#22c55e",false), background:"linear-gradient(135deg,#14532d,#166534)", border:"2px solid #22c55e", marginTop:8}}
+              onClick={()=>{ setShowPR(false); setScreen("calendar"); }}>
+              🎉 完成今日訓練！
+            </button>
+          )}
           {sessions.length>0&&(
             <button style={{...css.mainBtn(copied?"#22c55e":C.muted,false),background:copied?"#0a2e16":C.card,color:copied?"#4ade80":C.muted,border:`1.5px solid ${copied?"#22c55e":C.border}`}}
               onClick={()=>copyDaySummary(selectedDate)}>
@@ -625,7 +631,7 @@ export default function FitnessTracker() {
               </div>
             </div>
           ))}
-          <button style={css.smBtn(ti?.color)} onClick={addSet}>＋ 加一組（開始休息計時）</button>
+          <button style={{...css.mainBtn(ti?.color||C.accent,false), background:"transparent", border:`2px solid ${ti?.color||C.accent}`, color:ti?.color||C.accent, marginTop:4}} onClick={addSet}>＋ 加一組（開始休息計時）</button>
           <div style={css.divider}/>
           <button style={css.mainBtn(ti?.color||C.accent,false)} onClick={handleSave}>💾 完成並儲存</button>
         </div>
