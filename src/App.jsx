@@ -280,39 +280,39 @@ export default function FitnessTracker() {
     header:{padding:"18px 18px 12px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,background:"rgba(4,10,35,0.88)",backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",zIndex:10},
     title:{fontSize:22,fontWeight:800,letterSpacing:"-0.4px"},
     body:{flex:1,padding:"16px 18px 32px",overflowY:"auto"},
-    backBtn:{background:"none",border:"none",color:C.muted,fontSize:16,cursor:"pointer",padding:"0 0 14px",display:"flex",alignItems:"center",gap:4},
+    backBtn:{background:"none",border:"none",color:C.muted,fontSize:18,cursor:"pointer",padding:"0 0 14px",display:"flex",alignItems:"center",gap:4},
     statRow:{display:"flex",gap:10,marginBottom:16},
     statCard:a=>({flex:1,background:C.card,backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:`1px solid ${C.border}`,borderRadius:12,padding:"12px 14px",borderTop:`3px solid ${a}`}),
     statNum:{fontSize:30,fontWeight:800,lineHeight:1},
-    statLabel:{fontSize:13,color:C.muted,marginTop:3},
+    statLabel:{fontSize:18,color:C.muted,marginTop:3},
     monthNav:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12},
     monthLabel:{fontSize:18,fontWeight:700},
     navBtn:{background:"rgba(6,14,50,0.7)",backdropFilter:"blur(8px)",border:`1px solid ${C.border}`,borderRadius:8,color:C.text,fontSize:18,cursor:"pointer",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center"},
     calGrid:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3},
-    dayHeader:{textAlign:"center",fontSize:13,color:C.muted,padding:"4px 0",fontWeight:600},
+    dayHeader:{textAlign:"center",fontSize:18,color:C.muted,padding:"4px 0",fontWeight:600},
     dayCell:(isToday,isSel,hasData,isFuture)=>({aspectRatio:"1",borderRadius:8,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"5px 2px 4px",cursor:!isFuture?"pointer":"default",background:isSel?"rgba(96,165,250,0.25)":isToday?"rgba(96,165,250,0.12)":"rgba(4,10,30,0.35)",border:`1px solid ${isSel?C.accent:isToday?"rgba(96,165,250,0.5)":"transparent"}`,opacity:isFuture&&!hasData?0.3:1}),
-    dayNum:t=>({fontSize:14,fontWeight:t?800:500,color:t?C.accent:C.text,lineHeight:1}),
+    dayNum:t=>({fontSize:18,fontWeight:t?800:500,color:t?C.accent:C.text,lineHeight:1}),
     dotRow:{display:"flex",gap:2,flexWrap:"wrap",justifyContent:"center",marginTop:3},
     dot:c=>({width:6,height:6,borderRadius:"50%",background:c,flexShrink:0}),
     typeGrid:{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8},
     typeCard:(t,a)=>({padding:"14px 12px",borderRadius:12,cursor:"pointer",background:a?`rgba(${hexToRgb(t.color)},0.2)`:C.card,backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:`1.5px solid ${a?t.color:C.border}`,display:"flex",alignItems:"center",gap:10}),
     exList:{display:"flex",flexDirection:"column",gap:6},
-    exItem:(a,c)=>({padding:"13px 16px",borderRadius:10,cursor:"pointer",background:a?"rgba(96,165,250,0.15)":C.card,backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:`1.5px solid ${a?c:C.border}`,fontSize:15,color:a?C.text:C.muted}),
+    exItem:(a,c)=>({padding:"13px 16px",borderRadius:10,cursor:"pointer",background:a?"rgba(96,165,250,0.15)":C.card,backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:`1.5px solid ${a?c:C.border}`,fontSize:18,color:a?C.text:C.muted}),
     prevCard:{background:"rgba(4,20,60,0.82)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:`1px solid rgba(96,165,250,0.3)`,borderRadius:12,padding:"14px 16px",marginBottom:14},
     setRow:{display:"flex",alignItems:"center",gap:8,marginBottom:8},
-    setLabel:{fontSize:14,fontWeight:700,color:C.muted,minWidth:48},
-    input:{flex:1,padding:"11px 12px",borderRadius:8,background:"rgba(4,10,40,0.8)",border:`1.5px solid ${C.border}`,color:C.text,fontSize:16,outline:"none",textAlign:"center"},
+    setLabel:{fontSize:18,fontWeight:700,color:C.muted,minWidth:48},
+    input:{flex:1,padding:"11px 12px",borderRadius:8,background:"rgba(4,10,40,0.8)",border:`1.5px solid ${C.border}`,color:C.text,fontSize:18,outline:"none",textAlign:"center"},
     repsRow:{display:"flex",gap:5,marginBottom:6},
-    repBtn:(a,c)=>({flex:1,padding:"10px 0",borderRadius:8,border:`1.5px solid ${a?c:C.border}`,background:a?"rgba(96,165,250,0.15)":C.card,color:a?c:C.muted,fontSize:14,fontWeight:700,cursor:"pointer"}),
+    repBtn:(a,c)=>({flex:1,padding:"10px 0",borderRadius:8,border:`1.5px solid ${a?c:C.border}`,background:a?"rgba(96,165,250,0.15)":C.card,color:a?c:C.muted,fontSize:18,fontWeight:700,cursor:"pointer"}),
     unitToggle:{display:"flex",background:"rgba(4,10,40,0.7)",borderRadius:8,border:`1px solid ${C.border}`,overflow:"hidden"},
-    unitBtn:a=>({flex:1,padding:"7px 10px",border:"none",background:a?C.accent:"transparent",color:a?"#060c20":C.muted,fontWeight:700,fontSize:14,cursor:"pointer"}),
-    mainBtn:(c,d)=>({width:"100%",padding:"16px",borderRadius:12,border:"none",background:d?"rgba(20,30,70,0.6)":c,color:d?C.muted:"#060c20",fontSize:16,fontWeight:800,cursor:d?"not-allowed":"pointer",marginTop:10}),
-    smBtn:c=>({padding:"9px 16px",borderRadius:8,border:`1.5px solid ${c}`,background:"transparent",color:c,fontSize:14,fontWeight:700,cursor:"pointer"}),
+    unitBtn:a=>({flex:1,padding:"7px 10px",border:"none",background:a?C.accent:"transparent",color:a?"#060c20":C.muted,fontWeight:700,fontSize:18,cursor:"pointer"}),
+    mainBtn:(c,d)=>({width:"100%",padding:"16px",borderRadius:12,border:"none",background:d?"rgba(20,30,70,0.6)":c,color:d?C.muted:"#060c20",fontSize:18,fontWeight:800,cursor:d?"not-allowed":"pointer",marginTop:10}),
+    smBtn:c=>({padding:"9px 16px",borderRadius:8,border:`1.5px solid ${c}`,background:"transparent",color:c,fontSize:18,fontWeight:700,cursor:"pointer"}),
     divider:{height:1,background:C.border,margin:"14px 0"},
     restBox:{background:"rgba(4,20,60,0.85)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:`1px solid rgba(96,165,250,0.3)`,borderRadius:12,padding:"14px",marginBottom:12,textAlign:"center"},
-    sectionLabel:{fontSize:12,fontWeight:700,color:C.muted,letterSpacing:"1px",textTransform:"uppercase",marginBottom:8,marginTop:14},
-    badge:t=>({display:"inline-flex",alignItems:"center",gap:6,padding:"5px 12px",borderRadius:20,background:`rgba(${hexToRgb(t.color)},0.2)`,color:t.color,fontSize:13,fontWeight:700,marginBottom:12}),
-    prBanner:{position:"fixed",top:24,left:"50%",transform:"translateX(-50%)",background:"#eab308",color:"#060c20",padding:"12px 24px",borderRadius:20,fontWeight:800,fontSize:17,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(234,179,8,0.4)"},
+    sectionLabel:{fontSize:18,fontWeight:700,color:C.muted,letterSpacing:"1px",textTransform:"uppercase",marginBottom:8,marginTop:14},
+    badge:t=>({display:"inline-flex",alignItems:"center",gap:6,padding:"5px 12px",borderRadius:20,background:`rgba(${hexToRgb(t.color)},0.2)`,color:t.color,fontSize:18,fontWeight:700,marginBottom:12}),
+    prBanner:{position:"fixed",top:24,left:"50%",transform:"translateX(-50%)",background:"#eab308",color:"#060c20",padding:"12px 24px",borderRadius:20,fontWeight:800,fontSize:18,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(234,179,8,0.4)"},
     overlay:{position:"fixed",inset:0,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100,padding:24},
     modal:{background:"rgba(6,14,50,0.95)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",borderRadius:16,padding:24,width:"100%",maxWidth:340,border:`1px solid ${C.border}`},
     syncDot:s=>({width:8,height:8,borderRadius:"50%",background:s==='ok'?"#22c55e":s==='error'?"#ef4444":"#eab308",display:"inline-block",marginRight:4}),
@@ -328,11 +328,11 @@ export default function FitnessTracker() {
         {/* Google Sheets 同步 */}
         <div style={css.sectionLabel}>☁️ Google Sheets 雲端同步</div>
         <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:16,marginBottom:10}}>
-          <div style={{fontSize:13,color:C.muted,marginBottom:12,lineHeight:1.6}}>
+          <div style={{fontSize:18,color:C.muted,marginBottom:12,lineHeight:1.6}}>
             將 Google Apps Script 部署後，把產生的網址貼在下方，即可自動同步訓練資料到你的 Google 試算表。
           </div>
           <input
-            style={{...css.input,textAlign:"left",marginBottom:10,fontSize:13,width:"100%"}}
+            style={{...css.input,textAlign:"left",marginBottom:10,fontSize:18,width:"100%"}}
             placeholder="https://script.google.com/macros/s/xxxxx/exec"
             value={scriptUrlInput}
             onChange={e=>setScriptUrlInput(e.target.value)}
@@ -349,43 +349,43 @@ export default function FitnessTracker() {
             )}
           </div>
           {syncStatus&&(
-            <div style={{marginTop:10,fontSize:13,color:syncStatus==='ok'?"#4ade80":syncStatus==='error'?"#f87171":"#eab308"}}>
+            <div style={{marginTop:10,fontSize:18,color:syncStatus==='ok'?"#4ade80":syncStatus==='error'?"#f87171":"#eab308"}}>
               <span style={css.syncDot(syncStatus)}/>
               {syncStatus==='syncing'?"同步中…":syncStatus==='ok'?"同步成功！":"同步失敗，請檢查網址"}
             </div>
           )}
           {lastSync&&!syncStatus&&(
-            <div style={{marginTop:8,fontSize:12,color:C.muted}}>上次同步：{lastSync}</div>
+            <div style={{marginTop:8,fontSize:18,color:C.muted}}>上次同步：{lastSync}</div>
           )}
         </div>
 
         <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:16,marginBottom:10}}>
           <div style={{fontWeight:700,marginBottom:6}}>🔄 從 Google Sheets 還原資料</div>
-          <div style={{fontSize:13,color:C.muted,marginBottom:12}}>換新手機或資料遺失時，從雲端把資料載回來。注意：會覆蓋目前本機資料。</div>
+          <div style={{fontSize:18,color:C.muted,marginBottom:12}}>換新手機或資料遺失時，從雲端把資料載回來。注意：會覆蓋目前本機資料。</div>
           <button style={css.smBtn("#60a5fa")} onClick={handleRestoreFromSheets} disabled={!scriptUrl||restoring}>
             {restoring?"讀取中…":"從 Sheets 還原"}
           </button>
-          {restoreMsg&&<div style={{marginTop:10,fontSize:13,color:restoreMsg.startsWith("✅")?"#4ade80":"#f87171"}}>{restoreMsg}</div>}
+          {restoreMsg&&<div style={{marginTop:10,fontSize:18,color:restoreMsg.startsWith("✅")?"#4ade80":"#f87171"}}>{restoreMsg}</div>}
         </div>
 
         {/* 本機備份 */}
         <div style={css.sectionLabel}>💾 本機備份</div>
         <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:16,marginBottom:10}}>
           <div style={{fontWeight:700,marginBottom:6}}>📤 匯出資料</div>
-          <div style={{fontSize:13,color:C.muted,marginBottom:12}}>下載所有訓練紀錄為 JSON 備份檔。</div>
+          <div style={{fontSize:18,color:C.muted,marginBottom:12}}>下載所有訓練紀錄為 JSON 備份檔。</div>
           <button style={css.smBtn(C.accent)} onClick={exportData}>下載備份檔案</button>
         </div>
         <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:16,marginBottom:10}}>
           <div style={{fontWeight:700,marginBottom:6}}>📥 匯入資料</div>
-          <div style={{fontSize:13,color:C.muted,marginBottom:12}}>從備份檔還原（會覆蓋現有資料）。</div>
+          <div style={{fontSize:18,color:C.muted,marginBottom:12}}>從備份檔還原（會覆蓋現有資料）。</div>
           <input type="file" accept=".json" style={{display:"none"}} id="fileInput" onChange={importData}/>
           <button style={css.smBtn("#f97316")} onClick={()=>document.getElementById('fileInput').click()}>選取備份檔</button>
-          {importMsg&&<div style={{marginTop:10,fontSize:13,color:importMsg.startsWith("✅")?"#4ade80":"#f87171"}}>{importMsg}</div>}
+          {importMsg&&<div style={{marginTop:10,fontSize:18,color:importMsg.startsWith("✅")?"#4ade80":"#f87171"}}>{importMsg}</div>}
         </div>
 
         <div style={css.sectionLabel}>關於</div>
         <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:16}}>
-          <div style={{fontSize:13,color:C.muted,lineHeight:1.7}}>💪 健身紀錄 v2.0<br/>月費：NT${MONTHLY_FEE.toLocaleString()}<br/>資料儲存於本機 + Google Sheets</div>
+          <div style={{fontSize:18,color:C.muted,lineHeight:1.7}}>💪 健身紀錄 v2.0<br/>月費：NT${MONTHLY_FEE.toLocaleString()}<br/>資料儲存於本機 + Google Sheets</div>
         </div>
       </div>
     </div>
@@ -403,7 +403,7 @@ export default function FitnessTracker() {
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             {/* 同步狀態小燈 */}
             {scriptUrl&&(
-              <div style={{fontSize:12,color:syncStatus==='ok'?"#4ade80":syncStatus==='error'?"#f87171":syncStatus==='syncing'?"#eab308":C.muted,display:"flex",alignItems:"center",gap:4}}>
+              <div style={{fontSize:18,color:syncStatus==='ok'?"#4ade80":syncStatus==='error'?"#f87171":syncStatus==='syncing'?"#eab308":C.muted,display:"flex",alignItems:"center",gap:4}}>
                 <div style={{...css.syncDot(syncStatus||'idle'),background:syncStatus==='ok'?"#22c55e":syncStatus==='error'?"#ef4444":syncStatus==='syncing'?"#eab308":"#2a2a4a"}}/>
                 {syncStatus==='syncing'?"同步中":syncStatus==='ok'?"已同步":syncStatus==='error'?"同步失敗":"☁️"}
               </div>
@@ -420,10 +420,10 @@ export default function FitnessTracker() {
             <div style={css.statCard("#818cf8")}>
               <div style={css.statNum}>{visits}</div>
               <div style={css.statLabel}>本月進健身房次數</div>
-              {costPerVisit&&<div style={{fontSize:13,fontWeight:700,color:"#818cf8",marginTop:6}}>≈ NT${costPerVisit}<span style={{fontSize:10,fontWeight:400,color:C.muted}}> / 次</span></div>}
+              {costPerVisit&&<div style={{fontSize:18,fontWeight:700,color:"#818cf8",marginTop:6}}>≈ NT${costPerVisit}<span style={{fontSize:18,fontWeight:400,color:C.muted}}> / 次</span></div>}
             </div>
             <div style={css.statCard("#22c55e")}>
-              <div style={{...css.statNum,fontSize:20}}>{wVisits}<span style={{fontSize:14,fontWeight:500,color:C.muted}}>/{weeklyGoal}</span></div>
+              <div style={{...css.statNum,fontSize:20}}>{wVisits}<span style={{fontSize:18,fontWeight:500,color:C.muted}}>/{weeklyGoal}</span></div>
               <div style={css.statLabel}>本週目標達成</div>
             </div>
             <div style={css.statCard("#f97316")}>
@@ -455,7 +455,7 @@ export default function FitnessTracker() {
           <div style={{marginTop:16}}>
             <div style={css.sectionLabel}>部位顏色對照</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-              {TYPES.map(t=><div key={t.id} style={{display:"flex",alignItems:"center",gap:5,fontSize:12,color:C.muted}}><div style={css.dot(t.color)}/>{t.emoji}{t.label}</div>)}
+              {TYPES.map(t=><div key={t.id} style={{display:"flex",alignItems:"center",gap:5,fontSize:18,color:C.muted}}><div style={css.dot(t.color)}/>{t.emoji}{t.label}</div>)}
             </div>
           </div>
         </div>
@@ -472,7 +472,7 @@ export default function FitnessTracker() {
         <div style={css.header}><div style={css.title}>{isToday?"今日訓練":"訓練紀錄"}</div></div>
         <div style={css.body}>
           <button style={css.backBtn} onClick={()=>setScreen("calendar")}>← 月曆</button>
-          <div style={{fontSize:13,color:C.muted,marginBottom:16}}>{label}</div>
+          <div style={{fontSize:18,color:C.muted,marginBottom:16}}>{label}</div>
           {sessions.length>0&&(<>
             <div style={css.sectionLabel}>本日紀錄</div>
             {sessions.map((s,i)=>{
@@ -481,12 +481,12 @@ export default function FitnessTracker() {
                 <div key={i} style={{...css.prevCard,marginBottom:10}}>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
                     <span>{t?.emoji}</span>
-                    <span style={{fontWeight:700,fontSize:14}}>{t?.label}｜{s.exercise}</span>
-                    {s.duration&&<span style={{fontSize:11,color:C.muted,marginLeft:"auto"}}>{s.duration}分</span>}
+                    <span style={{fontWeight:700,fontSize:18}}>{t?.label}｜{s.exercise}</span>
+                    {s.duration&&<span style={{fontSize:18,color:C.muted,marginLeft:"auto"}}>{s.duration}分</span>}
                   </div>
                   {s.isCardio&&s.cardio
-                    ?<div style={{fontSize:13,color:C.muted}}>坡度 {s.cardio.incline}% · 速度 {s.cardio.speed}kph · {s.cardio.duration}分鐘</div>
-                    :(s.sets||[]).map((st,j)=><div key={j} style={{fontSize:13,color:C.muted,marginBottom:2}}>{s.isBodyweight?`第${j+1}組：${st.reps}次`:`第${j+1}組：${st.weight} ${st.unit||s.unit||"kg"} × ${st.reps}次`}</div>)
+                    ?<div style={{fontSize:18,color:C.muted}}>坡度 {s.cardio.incline}% · 速度 {s.cardio.speed}kph · {s.cardio.duration}分鐘</div>
+                    :(s.sets||[]).map((st,j)=><div key={j} style={{fontSize:18,color:C.muted,marginBottom:2}}>{s.isBodyweight?`第${j+1}組：${st.reps}次`:`第${j+1}組：${st.weight} ${st.unit||s.unit||"kg"} × ${st.reps}次`}</div>)
                   }
                 </div>
               );
@@ -510,7 +510,7 @@ export default function FitnessTracker() {
               {copied?"✅ 已複製！":"📋 複製當日訓練文字稿"}
             </button>
           )}
-          {sessions.length===0&&selectedDate<todayStr()&&<div style={{textAlign:"center",color:C.muted,paddingTop:40,fontSize:14}}>該日無訓練紀錄</div>}
+          {sessions.length===0&&selectedDate<todayStr()&&<div style={{textAlign:"center",color:C.muted,paddingTop:40,fontSize:18}}>該日無訓練紀錄</div>}
         </div>
       </div>
     );
@@ -526,7 +526,7 @@ export default function FitnessTracker() {
           {TYPES.map(t=>(
             <div key={t.id} style={css.typeCard(t,selType===t.id)} onClick={()=>{setSelType(t.id);setShowCustomInput(false);setScreen("selectExercise");}}>
               <span style={{fontSize:24}}>{t.emoji}</span>
-              <div><div style={{fontWeight:700,fontSize:14}}>{t.label}</div><div style={{fontSize:11,color:C.muted,marginTop:2}}>{allExercises(t.id).length} 個動作</div></div>
+              <div><div style={{fontWeight:700,fontSize:18}}>{t.label}</div><div style={{fontSize:18,color:C.muted,marginTop:2}}>{allExercises(t.id).length} 個動作</div></div>
             </div>
           ))}
         </div>
@@ -544,8 +544,8 @@ export default function FitnessTracker() {
         {pendingCustom&&(
           <div style={css.overlay}>
             <div style={css.modal}>
-              <div style={{fontSize:17,fontWeight:800,marginBottom:8}}>新增「{pendingCustom}」</div>
-              <div style={{fontSize:14,color:C.muted,marginBottom:20}}>要將此動作加入{ti?.label}的固定清單嗎？</div>
+              <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>新增「{pendingCustom}」</div>
+              <div style={{fontSize:18,color:C.muted,marginBottom:20}}>要將此動作加入{ti?.label}的固定清單嗎？</div>
               <div style={{display:"flex",gap:10}}>
                 <button style={{...css.smBtn(ti?.color),flex:1}} onClick={()=>{saveCustomExercise(pendingCustom,selType);selectExercise(pendingCustom);setPendingCustom(null);}}>加入固定清單</button>
                 <button style={{...css.smBtn(C.muted),flex:1}} onClick={()=>{selectExercise(pendingCustom);setPendingCustom(null);}}>僅此次</button>
@@ -559,7 +559,7 @@ export default function FitnessTracker() {
             return(
               <div key={ex} style={css.exItem(selExercise===ex,ti?.color)} onClick={()=>selectExercise(ex)}>
                 <div style={{fontWeight:500}}>{ex}</div>
-                {last&&<div style={{fontSize:11,color:C.muted,marginTop:3}}>上次：{last.isCardio?`${last.cardio?.duration}分鐘`:(last.sets||[]).slice(0,3).map(s=>s.isBodyweight?`${s.reps}次`:`${s.weight}${s.unit}`).join(" / ")}</div>}
+                {last&&<div style={{fontSize:18,color:C.muted,marginTop:3}}>上次：{last.isCardio?`${last.cardio?.duration}分鐘`:(last.sets||[]).slice(0,3).map(s=>s.isBodyweight?`${s.reps}次`:`${s.weight}${s.unit}`).join(" / ")}</div>}
               </div>
             );
           })}
@@ -583,14 +583,14 @@ export default function FitnessTracker() {
       <div style={css.app}>
         <div style={css.header}>
           <div style={css.title}>記錄組數</div>
-          <button style={{background:"none",border:"none",color:C.muted,fontSize:13,cursor:"pointer"}} onClick={()=>setScreen("selectExercise")}>換動作</button>
+          <button style={{background:"none",border:"none",color:C.muted,fontSize:18,cursor:"pointer"}} onClick={()=>setScreen("selectExercise")}>換動作</button>
         </div>
         <div style={css.body}>
           <div style={css.badge(ti)}>{ti?.emoji} {selExercise}</div>
           {restTimer&&restTimer.remaining>0&&(
             <div style={css.restBox}>
               <div style={{fontSize:36,fontWeight:900,color:C.accent,letterSpacing:"-1px"}}>{String(Math.floor(restTimer.remaining/60)).padStart(2,"0")}:{String(restTimer.remaining%60).padStart(2,"0")}</div>
-              <div style={{fontSize:12,color:C.muted,marginTop:2}}>組間休息中</div>
+              <div style={{fontSize:18,color:C.muted,marginTop:2}}>組間休息中</div>
               <div style={{display:"flex",gap:6,justifyContent:"center",marginTop:10}}>
                 {[60,90,120].map(s=><button key={s} style={css.smBtn(s===restPreset?C.accent:C.muted)} onClick={()=>{setRestPreset(s);setRestTimer({total:s,remaining:s});}}>{s}秒</button>)}
                 <button style={css.smBtn("#ef4444")} onClick={()=>setRestTimer(null)}>跳過</button>
@@ -599,17 +599,17 @@ export default function FitnessTracker() {
           )}
           {last&&(
             <div style={css.prevCard}>
-              <div style={{fontSize:11,color:"#60a5fa",fontWeight:700,marginBottom:6}}>📋 上次訓練（{last.savedAt?.slice(0,10)}）</div>
-              {(last.sets||[]).map((s,i)=><div key={i} style={{fontSize:13,color:C.muted,marginBottom:2}}>{isBW?`第${i+1}組：${s.reps}次`:`第${i+1}組：${s.weight} ${s.unit||last.unit||"kg"} × ${s.reps}次`}</div>)}
-              <button style={{...css.smBtn("#60a5fa"),marginTop:8,fontSize:12}} onClick={()=>applyLastSession(last)}>套用上次作為起點</button>
+              <div style={{fontSize:18,color:"#60a5fa",fontWeight:700,marginBottom:6}}>📋 上次訓練（{last.savedAt?.slice(0,10)}）</div>
+              {(last.sets||[]).map((s,i)=><div key={i} style={{fontSize:18,color:C.muted,marginBottom:2}}>{isBW?`第${i+1}組：${s.reps}次`:`第${i+1}組：${s.weight} ${s.unit||last.unit||"kg"} × ${s.reps}次`}</div>)}
+              <button style={{...css.smBtn("#60a5fa"),marginTop:8,fontSize:18}} onClick={()=>applyLastSession(last)}>套用上次作為起點</button>
             </div>
           )}
           <div style={css.sectionLabel}>本次組數</div>
           {sets.map((set,i)=>(
             <div key={i} style={{marginBottom:10,padding:"12px",background:C.card,borderRadius:10,border:`1px solid ${C.border}`}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
-                <span style={{fontSize:13,fontWeight:700,color:ti?.color}}>第 {i+1} 組</span>
-                {sets.length>1&&<button style={{background:"none",border:"none",color:C.muted,cursor:"pointer",fontSize:15}} onClick={()=>setSets(p=>p.filter((_,j)=>j!==i))}>✕</button>}
+                <span style={{fontSize:18,fontWeight:700,color:ti?.color}}>第 {i+1} 組</span>
+                {sets.length>1&&<button style={{background:"none",border:"none",color:C.muted,cursor:"pointer",fontSize:18}} onClick={()=>setSets(p=>p.filter((_,j)=>j!==i))}>✕</button>}
               </div>
               {!isBW&&(
                 <div style={css.setRow}>
@@ -617,7 +617,7 @@ export default function FitnessTracker() {
                   <input style={css.input} type="number" placeholder="0" value={set.weight} onChange={e=>setSets(p=>p.map((s,j)=>j===i?{...s,weight:e.target.value}:s))}/>
                   <div style={{display:"flex",borderRadius:7,overflow:"hidden",border:`1.5px solid ${C.border}`,flexShrink:0}}>
                     {["kg","lbs"].map(u=>(
-                      <button key={u} style={{padding:"6px 8px",border:"none",cursor:"pointer",fontSize:11,fontWeight:700,background:(set.unit||unit)===u?ti?.color:C.card,color:(set.unit||unit)===u?"#0d0d12":C.muted}}
+                      <button key={u} style={{padding:"6px 8px",border:"none",cursor:"pointer",fontSize:18,fontWeight:700,background:(set.unit||unit)===u?ti?.color:C.card,color:(set.unit||unit)===u?"#0d0d12":C.muted}}
                         onClick={()=>setSets(p=>p.map((s,j)=>j===i?{...s,unit:u}:s))}>
                         {u.toUpperCase()}
                       </button>
@@ -654,7 +654,7 @@ export default function FitnessTracker() {
           <div key={field} style={css.setRow}>
             <span style={css.setLabel}>{label}</span>
             <input style={css.input} type="number" placeholder="0" value={cardioData[field]} onChange={e=>setCardioData(p=>({...p,[field]:e.target.value}))}/>
-            <span style={{fontSize:12,color:C.muted,width:40,textAlign:"center"}}>{u}</span>
+            <span style={{fontSize:18,color:C.muted,width:40,textAlign:"center"}}>{u}</span>
           </div>
         ))}
         <div style={css.divider}/>
@@ -665,3 +665,4 @@ export default function FitnessTracker() {
 
   return null;
 }
+
