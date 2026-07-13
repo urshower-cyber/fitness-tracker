@@ -44,6 +44,10 @@ function loadLocal() {
 function saveLocal(data) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
 }
+function hexToRgb(hex) {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
 
 // ── 主 App ─────────────────────────────────────────────────────
 export default function FitnessTracker() {
@@ -270,47 +274,47 @@ export default function FitnessTracker() {
   }
 
   // ── 色彩系統 ──────────────────────────────────────────────
-  const C={bg:"#0d0d12",card:"#16161e",border:"#1f1f2e",text:"#f0f0f8",muted:"#7070a0",accent:"#818cf8"};
+  const C={bg:"#060c20",card:"rgba(6,14,50,0.78)",border:"rgba(96,165,250,0.22)",text:"#f0f0f8",muted:"#8899cc",accent:"#60a5fa"};
   const css={
-    app:{background:C.bg,minHeight:"100dvh",fontFamily:"'Inter','Noto Sans TC',sans-serif",color:C.text,maxWidth:500,margin:"0 auto",display:"flex",flexDirection:"column"},
-    header:{padding:"18px 18px 12px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,background:C.bg,zIndex:10},
-    title:{fontSize:18,fontWeight:800,letterSpacing:"-0.4px"},
+    app:{backgroundImage:"url('/background.jpg')",backgroundSize:"cover",backgroundPosition:"center",backgroundAttachment:"fixed",backgroundColor:C.bg,minHeight:"100dvh",fontFamily:"'Inter','Noto Sans TC',sans-serif",color:C.text,maxWidth:500,margin:"0 auto",display:"flex",flexDirection:"column"},
+    header:{padding:"18px 18px 12px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,background:"rgba(4,10,35,0.88)",backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",zIndex:10},
+    title:{fontSize:22,fontWeight:800,letterSpacing:"-0.4px"},
     body:{flex:1,padding:"16px 18px 32px",overflowY:"auto"},
-    backBtn:{background:"none",border:"none",color:C.muted,fontSize:14,cursor:"pointer",padding:"0 0 14px",display:"flex",alignItems:"center",gap:4},
+    backBtn:{background:"none",border:"none",color:C.muted,fontSize:16,cursor:"pointer",padding:"0 0 14px",display:"flex",alignItems:"center",gap:4},
     statRow:{display:"flex",gap:10,marginBottom:16},
-    statCard:a=>({flex:1,background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"12px 14px",borderTop:`3px solid ${a}`}),
-    statNum:{fontSize:26,fontWeight:800,lineHeight:1},
-    statLabel:{fontSize:11,color:C.muted,marginTop:3},
+    statCard:a=>({flex:1,background:C.card,backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:`1px solid ${C.border}`,borderRadius:12,padding:"12px 14px",borderTop:`3px solid ${a}`}),
+    statNum:{fontSize:30,fontWeight:800,lineHeight:1},
+    statLabel:{fontSize:13,color:C.muted,marginTop:3},
     monthNav:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12},
-    monthLabel:{fontSize:16,fontWeight:700},
-    navBtn:{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,color:C.text,fontSize:16,cursor:"pointer",width:34,height:34,display:"flex",alignItems:"center",justifyContent:"center"},
+    monthLabel:{fontSize:18,fontWeight:700},
+    navBtn:{background:"rgba(6,14,50,0.7)",backdropFilter:"blur(8px)",border:`1px solid ${C.border}`,borderRadius:8,color:C.text,fontSize:18,cursor:"pointer",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center"},
     calGrid:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3},
-    dayHeader:{textAlign:"center",fontSize:11,color:C.muted,padding:"4px 0",fontWeight:600},
-    dayCell:(isToday,isSel,hasData,isFuture)=>({aspectRatio:"1",borderRadius:8,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"5px 2px 4px",cursor:!isFuture?"pointer":"default",background:isSel?"#2a2a4a":isToday?"#1a1a30":"transparent",border:`1px solid ${isSel?C.accent:isToday?"#4040a0":"transparent"}`,opacity:isFuture&&!hasData?0.3:1}),
-    dayNum:t=>({fontSize:12,fontWeight:t?800:500,color:t?C.accent:C.text,lineHeight:1}),
+    dayHeader:{textAlign:"center",fontSize:13,color:C.muted,padding:"4px 0",fontWeight:600},
+    dayCell:(isToday,isSel,hasData,isFuture)=>({aspectRatio:"1",borderRadius:8,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"5px 2px 4px",cursor:!isFuture?"pointer":"default",background:isSel?"rgba(96,165,250,0.25)":isToday?"rgba(96,165,250,0.12)":"rgba(4,10,30,0.35)",border:`1px solid ${isSel?C.accent:isToday?"rgba(96,165,250,0.5)":"transparent"}`,opacity:isFuture&&!hasData?0.3:1}),
+    dayNum:t=>({fontSize:14,fontWeight:t?800:500,color:t?C.accent:C.text,lineHeight:1}),
     dotRow:{display:"flex",gap:2,flexWrap:"wrap",justifyContent:"center",marginTop:3},
-    dot:c=>({width:5,height:5,borderRadius:"50%",background:c,flexShrink:0}),
+    dot:c=>({width:6,height:6,borderRadius:"50%",background:c,flexShrink:0}),
     typeGrid:{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8},
-    typeCard:(t,a)=>({padding:"14px 12px",borderRadius:12,cursor:"pointer",background:a?t.light:C.card,border:`1.5px solid ${a?t.color:C.border}`,display:"flex",alignItems:"center",gap:10}),
+    typeCard:(t,a)=>({padding:"14px 12px",borderRadius:12,cursor:"pointer",background:a?`rgba(${hexToRgb(t.color)},0.2)`:C.card,backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:`1.5px solid ${a?t.color:C.border}`,display:"flex",alignItems:"center",gap:10}),
     exList:{display:"flex",flexDirection:"column",gap:6},
-    exItem:(a,c)=>({padding:"11px 14px",borderRadius:10,cursor:"pointer",background:a?"#1f1f30":C.card,border:`1.5px solid ${a?c:C.border}`,fontSize:14,color:a?C.text:C.muted}),
-    prevCard:{background:"#0f1a2e",border:`1px solid #1f3a5a`,borderRadius:12,padding:"12px 14px",marginBottom:14},
+    exItem:(a,c)=>({padding:"13px 16px",borderRadius:10,cursor:"pointer",background:a?"rgba(96,165,250,0.15)":C.card,backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:`1.5px solid ${a?c:C.border}`,fontSize:15,color:a?C.text:C.muted}),
+    prevCard:{background:"rgba(4,20,60,0.82)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:`1px solid rgba(96,165,250,0.3)`,borderRadius:12,padding:"14px 16px",marginBottom:14},
     setRow:{display:"flex",alignItems:"center",gap:8,marginBottom:8},
-    setLabel:{fontSize:12,fontWeight:700,color:C.muted,minWidth:44},
-    input:{flex:1,padding:"10px 12px",borderRadius:8,background:"#0d0d12",border:`1.5px solid ${C.border}`,color:C.text,fontSize:15,outline:"none",textAlign:"center"},
+    setLabel:{fontSize:14,fontWeight:700,color:C.muted,minWidth:48},
+    input:{flex:1,padding:"11px 12px",borderRadius:8,background:"rgba(4,10,40,0.8)",border:`1.5px solid ${C.border}`,color:C.text,fontSize:16,outline:"none",textAlign:"center"},
     repsRow:{display:"flex",gap:5,marginBottom:6},
-    repBtn:(a,c)=>({flex:1,padding:"8px 0",borderRadius:8,border:`1.5px solid ${a?c:C.border}`,background:a?"#1f1f30":C.card,color:a?c:C.muted,fontSize:13,fontWeight:700,cursor:"pointer"}),
-    unitToggle:{display:"flex",background:C.card,borderRadius:8,border:`1px solid ${C.border}`,overflow:"hidden"},
-    unitBtn:a=>({flex:1,padding:"6px 10px",border:"none",background:a?C.accent:"transparent",color:a?"#0d0d12":C.muted,fontWeight:700,fontSize:13,cursor:"pointer"}),
-    mainBtn:(c,d)=>({width:"100%",padding:"15px",borderRadius:12,border:"none",background:d?C.card:c,color:d?C.muted:"#0d0d12",fontSize:15,fontWeight:800,cursor:d?"not-allowed":"pointer",marginTop:10}),
-    smBtn:c=>({padding:"8px 14px",borderRadius:8,border:`1.5px solid ${c}`,background:"transparent",color:c,fontSize:13,fontWeight:700,cursor:"pointer"}),
+    repBtn:(a,c)=>({flex:1,padding:"10px 0",borderRadius:8,border:`1.5px solid ${a?c:C.border}`,background:a?"rgba(96,165,250,0.15)":C.card,color:a?c:C.muted,fontSize:14,fontWeight:700,cursor:"pointer"}),
+    unitToggle:{display:"flex",background:"rgba(4,10,40,0.7)",borderRadius:8,border:`1px solid ${C.border}`,overflow:"hidden"},
+    unitBtn:a=>({flex:1,padding:"7px 10px",border:"none",background:a?C.accent:"transparent",color:a?"#060c20":C.muted,fontWeight:700,fontSize:14,cursor:"pointer"}),
+    mainBtn:(c,d)=>({width:"100%",padding:"16px",borderRadius:12,border:"none",background:d?"rgba(20,30,70,0.6)":c,color:d?C.muted:"#060c20",fontSize:16,fontWeight:800,cursor:d?"not-allowed":"pointer",marginTop:10}),
+    smBtn:c=>({padding:"9px 16px",borderRadius:8,border:`1.5px solid ${c}`,background:"transparent",color:c,fontSize:14,fontWeight:700,cursor:"pointer"}),
     divider:{height:1,background:C.border,margin:"14px 0"},
-    restBox:{background:"#0f1a2e",border:`1px solid #1f3a5a`,borderRadius:12,padding:"14px",marginBottom:12,textAlign:"center"},
-    sectionLabel:{fontSize:11,fontWeight:700,color:C.muted,letterSpacing:"1px",textTransform:"uppercase",marginBottom:8,marginTop:14},
-    badge:t=>({display:"inline-flex",alignItems:"center",gap:6,padding:"4px 10px",borderRadius:20,background:t.light,color:t.color,fontSize:12,fontWeight:700,marginBottom:12}),
-    prBanner:{position:"fixed",top:24,left:"50%",transform:"translateX(-50%)",background:"#eab308",color:"#0d0d12",padding:"12px 24px",borderRadius:20,fontWeight:800,fontSize:16,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(234,179,8,0.4)"},
+    restBox:{background:"rgba(4,20,60,0.85)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:`1px solid rgba(96,165,250,0.3)`,borderRadius:12,padding:"14px",marginBottom:12,textAlign:"center"},
+    sectionLabel:{fontSize:12,fontWeight:700,color:C.muted,letterSpacing:"1px",textTransform:"uppercase",marginBottom:8,marginTop:14},
+    badge:t=>({display:"inline-flex",alignItems:"center",gap:6,padding:"5px 12px",borderRadius:20,background:`rgba(${hexToRgb(t.color)},0.2)`,color:t.color,fontSize:13,fontWeight:700,marginBottom:12}),
+    prBanner:{position:"fixed",top:24,left:"50%",transform:"translateX(-50%)",background:"#eab308",color:"#060c20",padding:"12px 24px",borderRadius:20,fontWeight:800,fontSize:17,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(234,179,8,0.4)"},
     overlay:{position:"fixed",inset:0,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100,padding:24},
-    modal:{background:C.card,borderRadius:16,padding:24,width:"100%",maxWidth:340,border:`1px solid ${C.border}`},
+    modal:{background:"rgba(6,14,50,0.95)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",borderRadius:16,padding:24,width:"100%",maxWidth:340,border:`1px solid ${C.border}`},
     syncDot:s=>({width:8,height:8,borderRadius:"50%",background:s==='ok'?"#22c55e":s==='error'?"#ef4444":"#eab308",display:"inline-block",marginRight:4}),
   };
 
