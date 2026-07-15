@@ -83,6 +83,7 @@ export default function FitnessTracker() {
   const [copied, setCopied] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [importMsg, setImportMsg] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null); // {date, idx}
 
   useEffect(() => {
     if (!restTimer || restTimer.remaining <= 0) return;
@@ -169,6 +170,16 @@ export default function FitnessTracker() {
     const prevMax = Math.max(...(last.sets||[]).map(s => toKg(s.weight, s.unit||last.unit||"kg")));
     const newMax = Math.max(...newSets.map(s => toKg(s.weight, s.unit||u)));
     return newMax > prevMax && prevMax > 0;
+  }
+  function deleteSession(dateStr, idx) {
+    const newLog = { ...log };
+    newLog[dateStr] = newLog[dateStr].filter((_, i) => i !== idx);
+    if (newLog[dateStr].length === 0) delete newLog[dateStr];
+    setLog(newLog);
+    const fullData = { log: newLog, customEx, unit, weeklyGoal, version: 2 };
+    saveLocal(fullData);
+    syncToSheets(fullData);
+    setDeleteConfirm(null);
   }
   function monthVisits() {
     const y=viewMonth.getFullYear(), m=viewMonth.getMonth();
@@ -481,8 +492,10 @@ export default function FitnessTracker() {
                 <div key={i} style={{...css.prevCard,marginBottom:10}}>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
                     <span>{t?.emoji}</span>
-                    <span style={{fontWeight:700,fontSize:18}}>{t?.label}｜{s.exercise}</span>
-                    {s.duration&&<span style={{fontSize:18,color:C.muted,marginLeft:"auto"}}>{s.duration}分</span>}
+                    <span style={{fontWeight:700,fontSize:18,flex:1}}>{t?.label}｜{s.exercise}</span>
+                    {s.duration&&<span style={{fontSize:18,color:C.muted}}>{s.duration}分</span>}
+                    <button style={{background:"none",border:"none",color:"#ef4444",fontSize:20,cursor:"pointer",padding:"0 4px",flexShrink:0}}
+                      onClick={()=>setDeleteConfirm({date:selectedDate,idx:i})}>🗑</button>
                   </div>
                   {s.isCardio&&s.cardio
                     ?<div style={{fontSize:18,color:C.muted}}>坡度 {s.cardio.incline}% · 速度 {s.cardio.speed}kph · {s.cardio.duration}分鐘</div>
@@ -491,6 +504,20 @@ export default function FitnessTracker() {
                 </div>
               );
             })}
+
+            {/* 刪除確認彈窗 */}
+            {deleteConfirm&&(
+              <div style={css.overlay}>
+                <div style={css.modal}>
+                  <div style={{fontSize:20,fontWeight:800,marginBottom:10}}>確定要刪除？</div>
+                  <div style={{fontSize:18,color:C.muted,marginBottom:24}}>這筆訓練紀錄刪除後無法復原。</div>
+                  <div style={{display:"flex",gap:10}}>
+                    <button style={{...css.smBtn("#ef4444"),flex:1}} onClick={()=>deleteSession(deleteConfirm.date,deleteConfirm.idx)}>確定刪除</button>
+                    <button style={{...css.smBtn(C.muted),flex:1}} onClick={()=>setDeleteConfirm(null)}>取消</button>
+                  </div>
+                </div>
+              </div>
+            )}
             <div style={css.divider}/>
           </>)}
           {(isToday||selectedDate>=todayStr())&&(
@@ -665,4 +692,3 @@ export default function FitnessTracker() {
 
   return null;
 }
-
