@@ -84,8 +84,8 @@ export default function FitnessTracker() {
   const [showSettings, setShowSettings] = useState(false);
   const [importMsg, setImportMsg] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [exitToast, setExitToast] = useState(false);
-  const exitAttemptRef = useRef(false); // {date, idx}
+  const [draftData, setDraftData] = useState(null);
+  const [showDraftBanner, setShowDraftBanner] = useState(false); // {date, idx}
 
   useEffect(() => {
     if (!restTimer || restTimer.remaining <= 0) return;
@@ -97,48 +97,51 @@ export default function FitnessTracker() {
     saveLocal({ log, customEx, unit, weeklyGoal, version: 2 });
   }, [weeklyGoal]);
 
-  // ── 返回手勢攔截 ───────────────────────────────────────────
-  function goBack() {
-    if (showSettings)    { setShowSettings(false); return; }
-    if (screen === 'logSets' || screen === 'cardio') { setScreen('selectExercise'); return; }
-    if (screen === 'selectExercise') { setScreen('selectType'); return; }
-    if (screen === 'selectType')     { setScreen('dayDetail');  return; }
-    if (screen === 'dayDetail')      { setScreen('calendar');   return; }
-  }
-
+  // ── 草稿自動儲存 ───────────────────────────────────────────
+  // 開啟 App 時檢查是否有未完成的訓練
   useEffect(() => {
-    // 塞入兩個假歷史，讓系統永遠有得返回而不關掉 App
-    window.history.pushState(null, '', window.location.href);
-    window.history.pushState(null, '', window.location.href);
+    try {
+      const raw = localStorage.getItem('fitness_draft');
+      if (!raw) return;
+      const d = JSON.parse(raw);
+      const hoursDiff = (Date.now() - new Date(d.savedAt)) / 3600000;
+      if (hoursDiff < 24 && d.selExercise) {
+        setDraftData(d);
+        setShowDraftBanner(true);
+      } else {
+        localStorage.removeItem('fitness_draft');
+      }
+    } catch {}
   }, []);
 
+  // 有在記錄中就自動存草稿
   useEffect(() => {
-    const handlePop = () => {
-      // 立刻推回去，永遠不讓瀏覽器真的退出
-      window.history.pushState(null, '', window.location.href);
+    if (!['logSets','cardio','selectExercise','selectType'].includes(screen)) return;
+    const draft = { screen, selType, selExercise, sets, cardioData, selectedDate, savedAt: new Date().toISOString() };
+    try { localStorage.setItem('fitness_draft', JSON.stringify(draft)); } catch {}
+  }, [screen, selType, selExercise, sets, cardioData, selectedDate]);
 
-      const onHome = screen === 'calendar' && !showSettings;
-      if (onHome) {
-        if (exitAttemptRef.current) {
-          // 第二次在首頁滑：清除提示（用 Home 鍵才能真的關 App）
-          exitAttemptRef.current = false;
-          setExitToast(false);
-        } else {
-          exitAttemptRef.current = true;
-          setExitToast(true);
-          setTimeout(() => {
-            exitAttemptRef.current = false;
-            setExitToast(false);
-          }, 2500);
-        }
-      } else {
-        goBack();
-      }
-    };
+  function restoreDraft() {
+    if (!draftData) return;
+    setSelType(draftData.selType);
+    setSelExercise(draftData.selExercise);
+    setSets(draftData.sets || [{ weight: '', reps: '', unit }]);
+    setCardioData(draftData.cardio || { incline: '', speed: '', duration: '' });
+    setSelectedDate(draftData.selectedDate || todayStr());
+    setScreen(draftData.screen || 'logSets');
+    setShowDraftBanner(false);
+    setDraftData(null);
+  }
 
-    window.addEventListener('popstate', handlePop);
-    return () => window.removeEventListener('popstate', handlePop);
-  }, [screen, showSettings]);
+  function discardDraft() {
+    localStorage.removeItem('fitness_draft');
+    setShowDraftBanner(false);
+    setDraftData(null);
+  }
+
+  function clearDraft() {
+    localStorage.removeItem('fitness_draft');
+  }
 
   // ── Google Sheets 同步函式 ──────────────────────────────────
   async function syncToSheets(fullData, url) {
@@ -263,7 +266,8 @@ export default function FitnessTracker() {
     setLog(newLog);
     const fullData={log:newLog,customEx,unit,weeklyGoal,version:2};
     saveLocal(fullData);
-    syncToSheets(fullData); // 背景同步到 Sheets
+    syncToSheets(fullData);
+    clearDraft(); // 背景同步到 Sheets
     if(isPR){setShowPR(true);setTimeout(()=>setShowPR(false),3000);}
     setTimeout(()=>{resetSession();setScreen("dayDetail");},400);
   }
@@ -272,6 +276,7 @@ export default function FitnessTracker() {
     setSelType(null);setSelExercise(null);setSets([{weight:"",reps:"",unit}]);
     setCardioData({incline:"",speed:"",duration:""});setSessionStart(null);
     setCustomInput("");setShowCustomInput(false);setPendingCustom(null);setRestTimer(null);
+    clearDraft();
   }
   function addSet() {
     const last=sets[sets.length-1];
@@ -454,9 +459,17 @@ export default function FitnessTracker() {
     return(
       <div style={css.app}>
         {showPR&&<div style={css.prBanner}>🏆 新個人最佳紀錄！</div>}
-        {exitToast&&(
-          <div style={{position:"fixed",bottom:40,left:"50%",transform:"translateX(-50%)",background:"rgba(20,20,40,0.95)",border:`1px solid ${C.border}`,color:C.text,padding:"12px 24px",borderRadius:20,fontSize:18,fontWeight:600,zIndex:999,whiteSpace:"nowrap",backdropFilter:"blur(10px)"}}>
-            按 Home 鍵離開 App
+        {showDraftBanner&&draftData&&(
+          <div style={{position:"fixed",top:0,left:0,right:0,zIndex:200,background:"rgba(6,14,50,0.97)",backdropFilter:"blur(12px)",borderBottom:`1px solid ${C.border}`,padding:"16px 18px"}}>
+            <div style={{fontSize:18,fontWeight:700,marginBottom:4}}>📝 有未完成的訓練</div>
+            <div style={{fontSize:18,color:C.muted,marginBottom:14}}>
+              {draftData.selType && `${typeInfo(draftData.selType)?.emoji} ${draftData.selType}｜`}{draftData.selExercise}
+              <span style={{marginLeft:8,fontSize:16,color:C.muted}}>{draftData.savedAt?.slice(0,16).replace('T',' ')}</span>
+            </div>
+            <div style={{display:"flex",gap:10}}>
+              <button style={{...css.smBtn(C.accent),flex:1,padding:"12px"}} onClick={restoreDraft}>繼續上次訓練</button>
+              <button style={{...css.smBtn(C.muted),flex:1,padding:"12px"}} onClick={discardDraft}>捨棄</button>
+            </div>
           </div>
         )}
         <div style={css.header}>
