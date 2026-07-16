@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // ── 常數定義 ────────────────────────────────────────────────────
 const TYPES = [
@@ -83,7 +83,9 @@ export default function FitnessTracker() {
   const [copied, setCopied] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [importMsg, setImportMsg] = useState(null);
-  const [deleteConfirm, setDeleteConfirm] = useState(null); // {date, idx}
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [exitToast, setExitToast] = useState(false);
+  const exitAttemptRef = useRef(false); // {date, idx}
 
   useEffect(() => {
     if (!restTimer || restTimer.remaining <= 0) return;
@@ -94,6 +96,46 @@ export default function FitnessTracker() {
   useEffect(() => {
     saveLocal({ log, customEx, unit, weeklyGoal, version: 2 });
   }, [weeklyGoal]);
+
+  // ── 返回手勢攔截 ───────────────────────────────────────────
+  function goBack() {
+    if (showSettings)    { setShowSettings(false); return; }
+    if (screen === 'logSets' || screen === 'cardio') { setScreen('selectExercise'); return; }
+    if (screen === 'selectExercise') { setScreen('selectType'); return; }
+    if (screen === 'selectType')     { setScreen('dayDetail');  return; }
+    if (screen === 'dayDetail')      { setScreen('calendar');   return; }
+  }
+
+  useEffect(() => {
+    // 初始推一個假狀態，讓第一次返回手勢被我們攔截
+    window.history.pushState(null, '', window.location.href);
+
+    const handlePop = () => {
+      // 永遠先推回去，防止真的退出
+      window.history.pushState(null, '', window.location.href);
+
+      const onCalendar = screen === 'calendar' && !showSettings;
+      if (onCalendar) {
+        if (exitAttemptRef.current) {
+          // 第二次：真的要離開，讓瀏覽器處理
+          window.history.go(-2);
+        } else {
+          // 第一次：顯示提示
+          exitAttemptRef.current = true;
+          setExitToast(true);
+          setTimeout(() => {
+            exitAttemptRef.current = false;
+            setExitToast(false);
+          }, 2000);
+        }
+      } else {
+        goBack();
+      }
+    };
+
+    window.addEventListener('popstate', handlePop);
+    return () => window.removeEventListener('popstate', handlePop);
+  }, [screen, showSettings]);
 
   // ── Google Sheets 同步函式 ──────────────────────────────────
   async function syncToSheets(fullData, url) {
@@ -404,43 +446,34 @@ export default function FitnessTracker() {
 
   // ── 月曆 ──────────────────────────────────────────────────
   if(screen==="calendar"){
-    const days=calendarDays(), visits=monthVisits(), wVisits=weekVisits(), today=todayStr();
+    const days=calendarDays(), visits=monthVisits(), today=todayStr();
     const costPerVisit=visits>0?(MONTHLY_FEE/visits).toFixed(1):null;
     return(
       <div style={css.app}>
         {showPR&&<div style={css.prBanner}>🏆 新個人最佳紀錄！</div>}
+        {exitToast&&(
+          <div style={{position:"fixed",bottom:40,left:"50%",transform:"translateX(-50%)",background:"rgba(20,20,40,0.95)",border:`1px solid ${C.border}`,color:C.text,padding:"12px 24px",borderRadius:20,fontSize:18,fontWeight:600,zIndex:999,whiteSpace:"nowrap",backdropFilter:"blur(10px)"}}>
+            再滑一次離開 App
+          </div>
+        )}
         <div style={css.header}>
           <div style={css.title}>💪 健身紀錄</div>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
-            {/* 同步狀態小燈 */}
             {scriptUrl&&(
               <div style={{fontSize:18,color:syncStatus==='ok'?"#4ade80":syncStatus==='error'?"#f87171":syncStatus==='syncing'?"#eab308":C.muted,display:"flex",alignItems:"center",gap:4}}>
                 <div style={{...css.syncDot(syncStatus||'idle'),background:syncStatus==='ok'?"#22c55e":syncStatus==='error'?"#ef4444":syncStatus==='syncing'?"#eab308":"#2a2a4a"}}/>
                 {syncStatus==='syncing'?"同步中":syncStatus==='ok'?"已同步":syncStatus==='error'?"同步失敗":"☁️"}
               </div>
             )}
-            <div style={css.unitToggle}>
-              <button style={css.unitBtn(unit==="kg")} onClick={()=>{setUnit("kg");saveLocal({log,customEx,unit:"kg",weeklyGoal,version:2});}}>KG</button>
-              <button style={css.unitBtn(unit==="lbs")} onClick={()=>{setUnit("lbs");saveLocal({log,customEx,unit:"lbs",weeklyGoal,version:2});}}>LBS</button>
-            </div>
             <button style={{...css.navBtn}} onClick={()=>setShowSettings(true)}>⚙️</button>
           </div>
         </div>
         <div style={css.body}>
-          <div style={css.statRow}>
+          <div style={{marginBottom:16}}>
             <div style={css.statCard("#818cf8")}>
               <div style={css.statNum}>{visits}</div>
               <div style={css.statLabel}>本月進健身房次數</div>
               {costPerVisit&&<div style={{fontSize:18,fontWeight:700,color:"#818cf8",marginTop:6}}>≈ NT${costPerVisit}<span style={{fontSize:18,fontWeight:400,color:C.muted}}> / 次</span></div>}
-            </div>
-            <div style={css.statCard("#22c55e")}>
-              <div style={{...css.statNum,fontSize:20}}>{wVisits}<span style={{fontSize:18,fontWeight:500,color:C.muted}}>/{weeklyGoal}</span></div>
-              <div style={css.statLabel}>本週目標達成</div>
-            </div>
-            <div style={css.statCard("#f97316")}>
-              <input value={weeklyGoal} type="number" min={1} max={7} onChange={e=>setWeeklyGoal(Number(e.target.value))}
-                style={{width:40,background:"none",border:"none",color:C.text,fontSize:26,fontWeight:800,outline:"none",padding:0}}/>
-              <div style={css.statLabel}>每週目標</div>
             </div>
           </div>
           <div style={css.monthNav}>
@@ -463,9 +496,9 @@ export default function FitnessTracker() {
               );
             })}
           </div>
-          <div style={{marginTop:16}}>
-            <div style={css.sectionLabel}>部位顏色對照</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+          <div style={{marginTop:16,textAlign:"center"}}>
+            <div style={{...css.sectionLabel,textAlign:"center"}}>部位顏色對照</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:10,justifyContent:"center"}}>
               {TYPES.map(t=><div key={t.id} style={{display:"flex",alignItems:"center",gap:5,fontSize:18,color:C.muted}}><div style={css.dot(t.color)}/>{t.emoji}{t.label}</div>)}
             </div>
           </div>
@@ -606,6 +639,7 @@ export default function FitnessTracker() {
   // ── 記錄組數 ──────────────────────────────────────────────
   if(screen==="logSets"){
     const last=getLastSession(selExercise), isBW=BODYWEIGHT.has(selExercise);
+    const reversedSets=[...sets].map((s,i)=>({...s,originalIdx:i})).reverse();
     return(
       <div style={css.app}>
         <div style={css.header}>
@@ -614,6 +648,16 @@ export default function FitnessTracker() {
         </div>
         <div style={css.body}>
           <div style={css.badge(ti)}>{ti?.emoji} {selExercise}</div>
+
+          {/* 第一排：新增組數 + 完成動作 */}
+          <div style={{display:"flex",gap:10,marginBottom:12}}>
+            <button style={{flex:1,padding:"15px",borderRadius:12,border:`2px solid ${ti?.color||C.accent}`,background:"transparent",color:ti?.color||C.accent,fontSize:18,fontWeight:800,cursor:"pointer"}}
+              onClick={addSet}>＋ 新增組數</button>
+            <button style={{flex:1,padding:"15px",borderRadius:12,border:"none",background:ti?.color||C.accent,color:"#060c20",fontSize:18,fontWeight:800,cursor:"pointer"}}
+              onClick={handleSave}>✓ 完成動作</button>
+          </div>
+
+          {/* 第二排：組間休息倒數 */}
           {restTimer&&restTimer.remaining>0&&(
             <div style={css.restBox}>
               <div style={{fontSize:36,fontWeight:900,color:C.accent,letterSpacing:"-1px"}}>{String(Math.floor(restTimer.remaining/60)).padStart(2,"0")}:{String(restTimer.remaining%60).padStart(2,"0")}</div>
@@ -624,6 +668,8 @@ export default function FitnessTracker() {
               </div>
             </div>
           )}
+
+          {/* 上次訓練參考 */}
           {last&&(
             <div style={css.prevCard}>
               <div style={{fontSize:18,color:"#60a5fa",fontWeight:700,marginBottom:6}}>📋 上次訓練（{last.savedAt?.slice(0,10)}）</div>
@@ -631,40 +677,42 @@ export default function FitnessTracker() {
               <button style={{...css.smBtn("#60a5fa"),marginTop:8,fontSize:18}} onClick={()=>applyLastSession(last)}>套用上次作為起點</button>
             </div>
           )}
-          <div style={css.sectionLabel}>本次組數</div>
-          {sets.map((set,i)=>(
-            <div key={i} style={{marginBottom:10,padding:"12px",background:C.card,borderRadius:10,border:`1px solid ${C.border}`}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+
+          {/* 第三排起：最新組在最上面（倒序） */}
+          {reversedSets.map(({originalIdx:i,...set})=>(
+            <div key={i} style={{marginBottom:10,padding:"14px",background:C.card,borderRadius:10,border:`1px solid ${C.border}`}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
                 <span style={{fontSize:18,fontWeight:700,color:ti?.color}}>第 {i+1} 組</span>
-                {sets.length>1&&<button style={{background:"none",border:"none",color:C.muted,cursor:"pointer",fontSize:18}} onClick={()=>setSets(p=>p.filter((_,j)=>j!==i))}>✕</button>}
+                {sets.length>1&&<button style={{background:"none",border:"none",color:C.muted,cursor:"pointer",fontSize:20}} onClick={()=>setSets(p=>p.filter((_,j)=>j!==i))}>✕</button>}
               </div>
               {!isBW&&(
-                <div style={css.setRow}>
-                  <span style={css.setLabel}>重量</span>
-                  <input style={css.input} type="number" placeholder="0" value={set.weight} onChange={e=>setSets(p=>p.map((s,j)=>j===i?{...s,weight:e.target.value}:s))}/>
-                  <div style={{display:"flex",borderRadius:7,overflow:"hidden",border:`1.5px solid ${C.border}`,flexShrink:0}}>
+                <>
+                  <div style={css.setRow}>
+                    <span style={css.setLabel}>重量</span>
+                    <input style={css.input} type="number" placeholder="0" value={set.weight}
+                      onChange={e=>setSets(p=>p.map((s,j)=>j===i?{...s,weight:e.target.value}:s))}/>
+                  </div>
+                  {/* 單位選擇獨立一行，更清楚 */}
+                  <div style={{display:"flex",gap:8,marginBottom:10}}>
                     {["kg","lbs"].map(u=>(
-                      <button key={u} style={{padding:"6px 8px",border:"none",cursor:"pointer",fontSize:18,fontWeight:700,background:(set.unit||unit)===u?ti?.color:C.card,color:(set.unit||unit)===u?"#0d0d12":C.muted}}
+                      <button key={u} style={{flex:1,padding:"10px",borderRadius:8,border:`2px solid ${(set.unit||unit)===u?ti?.color:C.border}`,background:(set.unit||unit)===u?ti?.color:"transparent",color:(set.unit||unit)===u?"#060c20":C.muted,fontSize:18,fontWeight:700,cursor:"pointer"}}
                         onClick={()=>setSets(p=>p.map((s,j)=>j===i?{...s,unit:u}:s))}>
                         {u.toUpperCase()}
                       </button>
                     ))}
                   </div>
-                </div>
+                </>
               )}
-              <div style={{...css.setRow,flexDirection:"column",alignItems:"stretch",gap:6}}>
-                <div style={css.repsRow}>
-                  {REPS_PRESETS.map(r=>(
-                    <button key={r} style={css.repBtn(String(set.reps)===String(r),ti?.color)} onClick={()=>setSets(p=>p.map((s,j)=>j===i?{...s,reps:String(r)}:s))}>{r}</button>
-                  ))}
-                </div>
-                <input style={css.input} type="number" placeholder="自訂次數" value={set.reps} onChange={e=>setSets(p=>p.map((s,j)=>j===i?{...s,reps:e.target.value}:s))}/>
+              <div style={css.repsRow}>
+                {REPS_PRESETS.map(r=>(
+                  <button key={r} style={css.repBtn(String(set.reps)===String(r),ti?.color)}
+                    onClick={()=>setSets(p=>p.map((s,j)=>j===i?{...s,reps:String(r)}:s))}>{r}</button>
+                ))}
               </div>
+              <input style={{...css.input,marginTop:6}} type="number" placeholder="自訂次數" value={set.reps}
+                onChange={e=>setSets(p=>p.map((s,j)=>j===i?{...s,reps:e.target.value}:s))}/>
             </div>
           ))}
-          <button style={{...css.mainBtn(ti?.color||C.accent,false), background:"transparent", border:`2px solid ${ti?.color||C.accent}`, color:ti?.color||C.accent, marginTop:4}} onClick={addSet}>＋ 加一組（開始休息計時）</button>
-          <div style={css.divider}/>
-          <button style={css.mainBtn(ti?.color||C.accent,false)} onClick={handleSave}>💾 完成並儲存</button>
         </div>
       </div>
     );
