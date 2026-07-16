@@ -107,26 +107,29 @@ export default function FitnessTracker() {
   }
 
   useEffect(() => {
-    // 初始推一個假狀態，讓第一次返回手勢被我們攔截
+    // 塞入兩個假歷史，讓系統永遠有得返回而不關掉 App
     window.history.pushState(null, '', window.location.href);
+    window.history.pushState(null, '', window.location.href);
+  }, []);
 
+  useEffect(() => {
     const handlePop = () => {
-      // 永遠先推回去，防止真的退出
+      // 立刻推回去，永遠不讓瀏覽器真的退出
       window.history.pushState(null, '', window.location.href);
 
-      const onCalendar = screen === 'calendar' && !showSettings;
-      if (onCalendar) {
+      const onHome = screen === 'calendar' && !showSettings;
+      if (onHome) {
         if (exitAttemptRef.current) {
-          // 第二次：真的要離開，讓瀏覽器處理
-          window.history.go(-2);
+          // 第二次在首頁滑：清除提示（用 Home 鍵才能真的關 App）
+          exitAttemptRef.current = false;
+          setExitToast(false);
         } else {
-          // 第一次：顯示提示
           exitAttemptRef.current = true;
           setExitToast(true);
           setTimeout(() => {
             exitAttemptRef.current = false;
             setExitToast(false);
-          }, 2000);
+          }, 2500);
         }
       } else {
         goBack();
@@ -453,7 +456,7 @@ export default function FitnessTracker() {
         {showPR&&<div style={css.prBanner}>🏆 新個人最佳紀錄！</div>}
         {exitToast&&(
           <div style={{position:"fixed",bottom:40,left:"50%",transform:"translateX(-50%)",background:"rgba(20,20,40,0.95)",border:`1px solid ${C.border}`,color:C.text,padding:"12px 24px",borderRadius:20,fontSize:18,fontWeight:600,zIndex:999,whiteSpace:"nowrap",backdropFilter:"blur(10px)"}}>
-            再滑一次離開 App
+            按 Home 鍵離開 App
           </div>
         )}
         <div style={css.header}>
@@ -471,8 +474,10 @@ export default function FitnessTracker() {
         <div style={css.body}>
           <div style={{marginBottom:16}}>
             <div style={css.statCard("#818cf8")}>
-              <div style={css.statNum}>{visits}</div>
-              <div style={css.statLabel}>本月進健身房次數</div>
+              <div style={{display:"flex",alignItems:"baseline",gap:10}}>
+                <div style={css.statNum}>{visits}</div>
+                <div style={css.statLabel}>本月進健身房次數</div>
+              </div>
               {costPerVisit&&<div style={{fontSize:18,fontWeight:700,color:"#818cf8",marginTop:6}}>≈ NT${costPerVisit}<span style={{fontSize:18,fontWeight:400,color:C.muted}}> / 次</span></div>}
             </div>
           </div>
@@ -709,7 +714,7 @@ export default function FitnessTracker() {
                     onClick={()=>setSets(p=>p.map((s,j)=>j===i?{...s,reps:String(r)}:s))}>{r}</button>
                 ))}
               </div>
-              <input style={{...css.input,marginTop:6}} type="number" placeholder="自訂次數" value={set.reps}
+              <input style={{...css.input,marginTop:6,width:"100%",flex:"none"}} type="number" placeholder="自訂次數" value={set.reps}
                 onChange={e=>setSets(p=>p.map((s,j)=>j===i?{...s,reps:e.target.value}:s))}/>
             </div>
           ))}
