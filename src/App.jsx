@@ -511,8 +511,7 @@ export default function FitnessTracker() {
               const isToday=ds===today, isSel=ds===selectedDate, types=dayTypes(ds), isFuture=ds>today;
               return(
                 <div key={ds} style={css.dayCell(isToday,isSel,types.length>0,isFuture)}
-                  onClick={()=>{if(!isFuture||types.length>0){setSelectedDate(ds);setScreen("dayDetail");}}}>
-                  <span style={css.dayNum(isToday)}>{day}</span>
+                  onClick={()=>{ if(!isFuture){ setSelectedDate(ds); setScreen("dayDetail"); } }}>                  <span style={css.dayNum(isToday)}>{day}</span>
                   {types.length>0&&<div style={css.dotRow}>{types.map(t=><div key={t} style={css.dot(typeInfo(t)?.color||"#888")}/>)}</div>}
                 </div>
               );
@@ -575,11 +574,9 @@ export default function FitnessTracker() {
             )}
             <div style={css.divider}/>
           </>)}
-          {(isToday||selectedDate>=todayStr())&&(
-            <button style={css.mainBtn(C.accent,false)} onClick={()=>{resetSession();setScreen("selectType");}}>
-              ＋ {sessions.length>0?"繼續新增訓練":"開始記錄訓練"}
+          <button style={css.mainBtn(C.accent,false)} onClick={()=>{resetSession();setScreen("selectType");}}>
+              ＋ {sessions.length>0?(isToday?"繼續新增訓練":"補登訓練"):(isToday?"開始記錄訓練":"補登這天的訓練")}
             </button>
-          )}
           {sessions.length>0&&isToday&&(
             <button style={{...css.mainBtn("#22c55e",false), background:"linear-gradient(135deg,#14532d,#166534)", border:"2px solid #22c55e", marginTop:8}}
               onClick={()=>{ setShowPR(false); setScreen("calendar"); }}>
