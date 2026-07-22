@@ -21,8 +21,12 @@ const BASE_EXERCISES = {
   腹肌: ["機械-捲腹","其他-懸吊抬腿"],
   有氧: ["跑步機","登階機","腳踏車","步行"],
 };
-const BODYWEIGHT = new Set(["徒手-死蟲","徒手-棒式","機械-捲腹","其他-懸吊抬腿","徒手-板凳三頭撐體","其他-引體向上","機械-引體向上"]);
+const BODYWEIGHT = new Set(["徒手-死蟲","徒手-棒式","徒手-板凳三頭撐體"]);
 const CARDIO = new Set(["跑步機","登階機","腳踏車","步行"]);
+// 判斷是否為徒手動作（名稱含「徒手」即為徒手，不顯示重量欄位）
+function isBodyweightExercise(name) {
+  return name ? name.includes("徒手") : false;
+}
 const REPS_PRESETS = [6, 8, 10, 12, 14];
 const WEEKDAYS_FULL = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
 const WEEKDAYS_SHORT = ["日","一","二","三","四","五","六"];
@@ -254,7 +258,7 @@ export default function FitnessTracker() {
 
   // ── 儲存訓練 ──────────────────────────────────────────────
   function handleSave() {
-    const isCardio=CARDIO.has(selExercise), isBW=BODYWEIGHT.has(selExercise);
+    const isCardio=CARDIO.has(selExercise), isBW=isBodyweightExercise(selExercise);
     const isPR=!isCardio&&!isBW&&checkPR(selExercise,sets,unit);
     const duration=sessionStart?Math.round((Date.now()-sessionStart)/60000):null;
     const session={
@@ -657,7 +661,7 @@ export default function FitnessTracker() {
 
   // ── 記錄組數 ──────────────────────────────────────────────
   if(screen==="logSets"){
-    const last=getLastSession(selExercise), isBW=BODYWEIGHT.has(selExercise);
+    const last=getLastSession(selExercise), isBW=isBodyweightExercise(selExercise);
     const reversedSets=[...sets].map((s,i)=>({...s,originalIdx:i})).reverse();
     return(
       <div style={css.app}>
