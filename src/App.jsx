@@ -191,16 +191,20 @@ export default function FitnessTracker() {
   async function handleRestoreFromSheets() {
     setRestoring(true); setRestoreMsg(null);
     const data = await loadFromSheets();
-    if (data) {
+    if (data && data.log && Object.keys(data.log).length > 0) {
+      // Sheets 有資料才覆蓋
       setLog(data.log || {}); setCustomEx(data.customEx || {});
       setUnit(data.unit || "kg"); setWeeklyGoal(data.weeklyGoal || 4);
       saveLocal(data);
-      setRestoreMsg("✅ 還原成功！資料已更新。");
+      setRestoreMsg(`✅ 還原成功！共 ${Object.keys(data.log).length} 天的紀錄。`);
+    } else if (data && data.version) {
+      // Sheets 有回應但是空的
+      setRestoreMsg("⚠️ Google Sheets 目前是空的，取消還原以保護本機資料。");
     } else {
       setRestoreMsg("❌ 無法讀取，請確認網址正確，或 Sheets 腳本已部署。");
     }
     setRestoring(false);
-    setTimeout(() => setRestoreMsg(null), 4000);
+    setTimeout(() => setRestoreMsg(null), 5000);
   }
 
   // ── 輔助函式 ───────────────────────────────────────────────
