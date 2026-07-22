@@ -477,7 +477,7 @@ export default function FitnessTracker() {
           </div>
         )}
         <div style={css.header}>
-          <div style={css.title}>💪 健身紀錄</div>
+          <div style={css.title}>💪 TinU Un-Tong</div>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             {scriptUrl&&(
               <div style={{fontSize:18,color:syncStatus==='ok'?"#4ade80":syncStatus==='error'?"#f87171":syncStatus==='syncing'?"#eab308":C.muted,display:"flex",alignItems:"center",gap:4}}>
