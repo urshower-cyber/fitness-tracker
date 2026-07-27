@@ -23,6 +23,53 @@ const BASE_EXERCISES = {
 };
 const BODYWEIGHT = new Set(["徒手-死蟲","徒手-棒式","徒手-板凳三頭撐體"]);
 const CARDIO = new Set(["跑步機(A)","登階機(A)","腳踏車(B)","步行(C)"]);
+
+// ── 舊名稱 → 新名稱對照表（資料遷移用）────────────────────
+const NAME_MIGRATION = {
+  "啞鈴-臥推":"啞鈴-臥推(A)","槓鈴-臥推":"槓鈴-臥推(A)","其他-史密斯臥推":"其他-史密斯臥推(A)",
+  "槓鈴-上斜臥推":"槓鈴-上斜臥推(A)","其他-史密斯上斜臥推":"其他-史密斯上斜臥推(A)",
+  "啞鈴-上斜臥推":"啞鈴-上斜臥推(B)","機械-坐姿胸推":"機械-坐姿胸推(B)",
+  "機械-上胸推舉":"機械-上胸推舉(B)","機械-臥推":"機械-臥推(B)",
+  "機械-Dip":"機械-Dip(C)","機械-飛鳥":"機械-飛鳥(C)","滑輪-飛鳥":"滑輪-飛鳥(C)",
+  "機械-下斜推胸":"機械-下斜推胸(D)",
+  "其他-引體向上":"其他-引體向上(A)","機械-引體向上":"機械-引體向上(A)",
+  "機械-滑輪下拉":"機械-滑輪下拉(A)","機械-划船":"機械-划船(A)",
+  "其他-地雷管T-BAR划船":"其他-地雷管T-BAR划船(A)",
+  "滑輪-划船":"滑輪-划船(B)","啞鈴-划船":"啞鈴-划船(B)",
+  "槓鈴-划船(拉向肚臍)":"槓鈴-划船(拉向肚臍)(B)",
+  "機械-反手下拉":"機械-反手下拉(C)","滑輪-直臂下拉":"滑輪-直臂下拉(C)",
+  "啞鈴-側平舉":"啞鈴-側平舉(A)","機械-側平舉":"機械-側平舉(A)","滑輪-側平舉":"滑輪-側平舉(A)",
+  "啞鈴-肩推":"啞鈴-肩推(B)","機械-肩推":"機械-肩推(B)","滑輪-臉拉":"滑輪-臉拉(B)",
+  "啞鈴-俯身反飛鳥":"啞鈴-俯身反飛鳥(B)","機械-反飛鳥":"機械-反飛鳥(B)",
+  "啞鈴-阿諾肩推":"啞鈴-阿諾肩推(C)","槓鈴-划船(拉向胸口)":"槓鈴-划船(拉向胸口)(D)",
+  "機械-斜上腿推":"機械-斜上腿推(A)","機械-哈克深蹲":"機械-哈克深蹲(A)",
+  "槓鈴-高背槓深蹲":"槓鈴-高背槓深蹲(A)","槓鈴-羅馬尼亞硬舉":"槓鈴-羅馬尼亞硬舉(A)",
+  "機械-深蹲":"機械-深蹲(B)","機械-臀推":"機械-臀推(B)",
+  "機械-坐姿腿部屈伸":"機械-坐姿腿部屈伸(B)","機械-趴姿腿部屈伸":"機械-趴姿腿部屈伸(B)",
+  "啞鈴-保加利亞分腿蹲":"啞鈴-保加利亞分腿蹲(C)","機械-雙腿伸展":"機械-雙腿伸展(C)",
+  "機械-髖外展":"機械-髖外展(D)","機械-髖內收":"機械-髖內收(D)",
+  "滑輪-三頭下壓(繩索/直槓)":"滑輪-三頭下壓(繩索/直槓)(A)",
+  "滑輪-二頭彎舉":"滑輪-二頭彎舉(A)","槓鈴-W槓二頭彎舉":"槓鈴-W槓二頭彎舉(A)",
+  "機械-雙槓撐體機(三頭)":"機械-雙槓撐體機(三頭)(B)",
+  "啞鈴-二頭彎舉":"啞鈴-二頭彎舉(B)","啞鈴-三頭頸後臂屈伸":"啞鈴-三頭頸後臂屈伸(B)",
+  "徒手-板凳三頭撐體":"徒手-板凳三頭撐體(E)",
+  "其他-農夫走路":"其他-農夫走路(A)","徒手-死蟲":"徒手-死蟲(A)","徒手-棒式":"徒手-棒式(B)",
+  "壺鈴-盪壺":"壺鈴-盪壺(B)",
+  "機械-捲腹":"機械-捲腹(A)","其他-懸吊抬腿":"其他-懸吊抬腿(A)",
+  "跑步機":"跑步機(A)","登階機":"登階機(A)","腳踏車":"腳踏車(B)","步行":"步行(C)",
+};
+function migrateExerciseNames(log) {
+  let changed = false;
+  const newLog = {};
+  Object.entries(log).forEach(([date, sessions]) => {
+    newLog[date] = sessions.map(s => {
+      const newName = NAME_MIGRATION[s.exercise];
+      if (newName) { changed = true; return { ...s, exercise: newName }; }
+      return s;
+    });
+  });
+  return changed ? newLog : null;
+}
 // 判斷是否為徒手動作（名稱含「徒手」即為徒手，不顯示重量欄位）
 function isBodyweightExercise(name) {
   return name ? name.includes("徒手") : false;
@@ -56,7 +103,11 @@ function hexToRgb(hex) {
 // ── 主 App ─────────────────────────────────────────────────────
 export default function FitnessTracker() {
   const stored = loadLocal();
-  const [log, setLog] = useState(stored.log || {});
+  // 舊名稱自動遷移
+  const rawLog = stored.log || {};
+  const migratedLog = migrateExerciseNames(rawLog);
+  if (migratedLog) saveLocal({ ...stored, log: migratedLog });
+  const [log, setLog] = useState(migratedLog || rawLog);
   const [customEx, setCustomEx] = useState(stored.customEx || {});
   const [unit, setUnit] = useState(stored.unit || "kg");
   const [weeklyGoal, setWeeklyGoal] = useState(stored.weeklyGoal || 4);
