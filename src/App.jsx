@@ -12,24 +12,24 @@ const TYPES = [
   { id: "有氧", label: "有氧", emoji: "🏃", color: "#14b8a6", light: "#032a28" },
 ];
 const BASE_EXERCISES = {
-  胸: ["啞鈴-臥推","啞鈴-上斜臥推","槓鈴-臥推","槓鈴-上斜臥推","機械-飛鳥","機械-下斜推胸","機械-上胸推舉","機械-坐姿胸推","機械-臥推","機械-Dip","滑輪-飛鳥","其他-史密斯臥推","其他-史密斯上斜臥推"],
-  背: ["啞鈴-划船","槓鈴-划船(拉向肚臍)","機械-滑輪下拉","機械-反手下拉","機械-划船","機械-引體向上","滑輪-直臂下拉","滑輪-划船","其他-地雷管T-BAR划船","其他-引體向上"],
-  肩: ["啞鈴-肩推","啞鈴-阿諾肩推","啞鈴-側平舉","啞鈴-俯身反飛鳥","槓鈴-划船(拉向胸口)","機械-肩推","機械-側平舉","機械-反飛鳥","滑輪-側平舉","滑輪-臉拉"],
-  腿: ["啞鈴-保加利亞分腿蹲","槓鈴-高背槓深蹲","槓鈴-羅馬尼亞硬舉","機械-斜上腿推","機械-雙腿伸展","機械-坐姿腿部屈伸","機械-趴姿腿部屈伸","機械-臀推","機械-髖內收","機械-髖外展","機械-深蹲","機械-哈克深蹲"],
-  手臂: ["啞鈴-二頭彎舉","啞鈴-三頭頸後臂屈伸","槓鈴-W槓二頭彎舉","機械-雙槓撐體機(三頭)","滑輪-二頭彎舉","滑輪-三頭下壓(繩索/直槓)","徒手-板凳三頭撐體"],
-  核心: ["壺鈴-盪壺","其他-農夫走路","徒手-死蟲","徒手-棒式"],
-  腹肌: ["機械-捲腹","其他-懸吊抬腿"],
-  有氧: ["跑步機","登階機","腳踏車","步行"],
+  胸: ["槓鈴-臥推(A)","其他-史密斯臥推(A)","啞鈴-臥推(A)","槓鈴-上斜臥推(A)","其他-史密斯上斜臥推(A)","啞鈴-上斜臥推(B)","機械-坐姿胸推(B)","機械-上胸推舉(B)","機械-臥推(B)","機械-Dip(C)","機械-飛鳥(C)","滑輪-飛鳥(C)","機械-下斜推胸(D)"],
+  背: ["其他-引體向上(A)","機械-引體向上(A)","機械-滑輪下拉(A)","機械-划船(A)","其他-地雷管T-BAR划船(A)","滑輪-划船(B)","啞鈴-划船(B)","槓鈴-划船(拉向肚臍)(B)","機械-反手下拉(C)","滑輪-直臂下拉(C)"],
+  肩: ["啞鈴-側平舉(A)","機械-側平舉(A)","滑輪-側平舉(A)","啞鈴-肩推(B)","機械-肩推(B)","滑輪-臉拉(B)","啞鈴-俯身反飛鳥(B)","機械-反飛鳥(B)","啞鈴-阿諾肩推(C)","槓鈴-划船(拉向胸口)(D)"],
+  腿: ["機械-斜上腿推(A)","機械-哈克深蹲(A)","槓鈴-高背槓深蹲(A)","槓鈴-羅馬尼亞硬舉(A)","機械-深蹲(B)","機械-臀推(B)","機械-坐姿腿部屈伸(B)","機械-趴姿腿部屈伸(B)","啞鈴-保加利亞分腿蹲(C)","機械-雙腿伸展(C)","機械-髖外展(D)","機械-髖內收(D)"],
+  手臂: ["滑輪-三頭下壓(繩索/直槓)(A)","滑輪-二頭彎舉(A)","槓鈴-W槓二頭彎舉(A)","機械-雙槓撐體機(三頭)(B)","啞鈴-二頭彎舉(B)","啞鈴-三頭頸後臂屈伸(B)","徒手-板凳三頭撐體(E)"],
+  核心: ["其他-農夫走路(A)","徒手-死蟲(A)","徒手-棒式(B)","壺鈴-盪壺(B)"],
+  腹肌: ["機械-捲腹(A)","其他-懸吊抬腿(A)"],
+  有氧: ["跑步機(A)","登階機(A)","腳踏車(B)","步行(C)"],
 };
 const BODYWEIGHT = new Set(["徒手-死蟲","徒手-棒式","徒手-板凳三頭撐體"]);
-const CARDIO = new Set(["跑步機","登階機","腳踏車","步行"]);
+const CARDIO = new Set(["跑步機(A)","登階機(A)","腳踏車(B)","步行(C)"]);
 // 判斷是否為徒手動作（名稱含「徒手」即為徒手，不顯示重量欄位）
 function isBodyweightExercise(name) {
   return name ? name.includes("徒手") : false;
 }
 const REPS_PRESETS = [6, 8, 10, 12, 14];
 const WEEKDAYS_FULL = ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
-const WEEKDAYS_SHORT = ["日","一","二","三","四","五","六"];
+const WEEKDAYS_SHORT = ["一","二","三","四","五","六","日"]; // 週一開始
 const MONTHS = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
 const MONTHLY_FEE = 1088;
 const STORAGE_KEY = "fitness_v2";
@@ -89,7 +89,8 @@ export default function FitnessTracker() {
   const [importMsg, setImportMsg] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [draftData, setDraftData] = useState(null);
-  const [showDraftBanner, setShowDraftBanner] = useState(false); // {date, idx}
+  const [showDraftBanner, setShowDraftBanner] = useState(false);
+  const [lastExpanded, setLastExpanded] = useState(false); // {date, idx}
 
   useEffect(() => {
     if (!restTimer || restTimer.remaining <= 0) return;
@@ -248,7 +249,9 @@ export default function FitnessTracker() {
   }
   function calendarDays() {
     const y=viewMonth.getFullYear(), m=viewMonth.getMonth();
-    const first=new Date(y,m,1).getDay(), total=new Date(y,m+1,0).getDate();
+    const rawFirst=new Date(y,m,1).getDay(); // 0=Sun
+    const first=rawFirst===0?6:rawFirst-1;   // 週一為第一天
+    const total=new Date(y,m+1,0).getDate();
     const days=[];
     for(let i=0;i<first;i++) days.push(null);
     for(let i=1;i<=total;i++) days.push(i);
@@ -359,8 +362,8 @@ export default function FitnessTracker() {
     navBtn:{background:"rgba(6,14,50,0.7)",backdropFilter:"blur(8px)",border:`1px solid ${C.border}`,borderRadius:8,color:C.text,fontSize:18,cursor:"pointer",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center"},
     calGrid:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3},
     dayHeader:{textAlign:"center",fontSize:18,color:C.muted,padding:"4px 0",fontWeight:600},
-    dayCell:(isToday,isSel,hasData,isFuture)=>({aspectRatio:"1",borderRadius:8,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"5px 2px 4px",cursor:!isFuture?"pointer":"default",background:isSel?"rgba(96,165,250,0.25)":isToday?"rgba(96,165,250,0.12)":"rgba(4,10,30,0.35)",border:`1px solid ${isSel?C.accent:isToday?"rgba(96,165,250,0.5)":"transparent"}`,opacity:isFuture&&!hasData?0.3:1}),
-    dayNum:t=>({fontSize:18,fontWeight:t?800:500,color:t?C.accent:C.text,lineHeight:1}),
+    dayCell:(isToday,isSel,hasData,isFuture)=>({aspectRatio:"1",borderRadius:8,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"5px 2px 4px",cursor:!isFuture?"pointer":"default",background:isSel?"rgba(96,165,250,0.30)":isToday?"rgba(96,165,250,0.28)":"rgba(4,10,30,0.35)",border:`${isToday||isSel?"2px":"1px"} solid ${isSel?C.accent:isToday?C.accent:"transparent"}`,opacity:isFuture&&!hasData?0.3:1,boxShadow:isToday?"0 0 10px rgba(96,165,250,0.4)":"none"}),
+    dayNum:t=>({fontSize:t?18:14,fontWeight:t?900:500,color:t?C.accent:C.text,lineHeight:1}),
     dotRow:{display:"flex",gap:2,flexWrap:"wrap",justifyContent:"center",marginTop:3},
     dot:c=>({width:6,height:6,borderRadius:"50%",background:c,flexShrink:0}),
     typeGrid:{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8},
@@ -692,12 +695,19 @@ export default function FitnessTracker() {
             </div>
           )}
 
-          {/* 上次訓練參考 */}
+          {/* 上次訓練參考（可收納） */}
           {last&&(
             <div style={css.prevCard}>
-              <div style={{fontSize:18,color:"#60a5fa",fontWeight:700,marginBottom:6}}>📋 上次訓練（{last.savedAt?.slice(0,10)}）</div>
-              {(last.sets||[]).map((s,i)=><div key={i} style={{fontSize:18,color:C.muted,marginBottom:2}}>{isBW?`第${i+1}組：${s.reps}次`:`第${i+1}組：${s.weight} ${s.unit||last.unit||"kg"} × ${s.reps}次`}</div>)}
-              <button style={{...css.smBtn("#60a5fa"),marginTop:8,fontSize:18}} onClick={()=>applyLastSession(last)}>套用上次作為起點</button>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer"}} onClick={()=>setLastExpanded(e=>!e)}>
+                <div style={{fontSize:18,color:"#60a5fa",fontWeight:700}}>📋 上次訓練（{last.savedAt?.slice(0,10)}）</div>
+                <span style={{fontSize:20,color:C.muted,marginLeft:8}}>{lastExpanded?"▲":"▼"}</span>
+              </div>
+              {lastExpanded&&(
+                <>
+                  {(last.sets||[]).map((s,i)=><div key={i} style={{fontSize:18,color:C.muted,marginBottom:2,marginTop:6}}>{isBW?`第${i+1}組：${s.reps}次`:`第${i+1}組：${s.weight} ${s.unit||last.unit||"kg"} × ${s.reps}次`}</div>)}
+                  <button style={{...css.smBtn("#60a5fa"),marginTop:8,fontSize:18}} onClick={()=>applyLastSession(last)}>套用上次作為起點</button>
+                </>
+              )}
             </div>
           )}
 
