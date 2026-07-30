@@ -126,7 +126,7 @@ export default function FitnessTracker() {
   const [selectedDate, setSelectedDate] = useState(todayStr());
   const [selType, setSelType] = useState(null);
   const [selExercise, setSelExercise] = useState(null);
-  const [sets, setSets] = useState([{ weight: "", reps: "", unit: stored.unit || "kg" }]);
+  const [sets, setSets] = useState([{ weight: "", reps: "", unit: stored.unit || "kg", feel: "" }]);
   const [cardioData, setCardioData] = useState({ incline: "", speed: "", duration: "" });
   const [sessionStart, setSessionStart] = useState(null);
   const [customInput, setCustomInput] = useState("");
@@ -181,7 +181,7 @@ export default function FitnessTracker() {
     if (!draftData) return;
     setSelType(draftData.selType);
     setSelExercise(draftData.selExercise);
-    setSets(draftData.sets || [{ weight: '', reps: '', unit }]);
+    setSets(draftData.sets || [{ weight: '', reps: '', unit, feel: '' }]);
     setCardioData(draftData.cardio || { incline: '', speed: '', duration: '' });
     setSelectedDate(draftData.selectedDate || todayStr());
     setScreen(draftData.screen || 'logSets');
@@ -317,7 +317,7 @@ export default function FitnessTracker() {
     const duration=sessionStart?Math.round((Date.now()-sessionStart)/60000):null;
     const session={
       type:selType, exercise:selExercise,
-      sets:isCardio?[]:sets.map(s=>({weight:s.weight,reps:s.reps,unit:s.unit||unit})),
+      sets:isCardio?[]:sets.map(s=>({weight:s.weight,reps:s.reps,unit:s.unit||unit,feel:s.feel||""})),
       cardio:isCardio?cardioData:null, isCardio, isBodyweight:isBW, unit,
       startTime:sessionStart?fmtTime(new Date(sessionStart)):null,
       duration, savedAt:new Date().toISOString()
@@ -335,18 +335,18 @@ export default function FitnessTracker() {
   }
 
   function resetSession() {
-    setSelType(null);setSelExercise(null);setSets([{weight:"",reps:"",unit}]);
+    setSelType(null);setSelExercise(null);setSets([{weight:"",reps:"",unit,feel:""}]);
     setCardioData({incline:"",speed:"",duration:""});setSessionStart(null);
     setCustomInput("");setShowCustomInput(false);setPendingCustom(null);setRestTimer(null);
     clearDraft();
   }
   function addSet() {
     const last=sets[sets.length-1];
-    setSets(p=>[...p,{weight:last.weight,reps:last.reps,unit:last.unit||unit}]);
+    setSets(p=>[...p,{weight:last.weight,reps:last.reps,unit:last.unit||unit,feel:""}]);
     setRestTimer({total:restPreset,remaining:restPreset});
   }
   function applyLastSession(last) {
-    setSets(last.sets.map(s=>({weight:s.weight,reps:s.reps,unit:s.unit||last.unit||unit})));
+    setSets(last.sets.map(s=>({weight:s.weight,reps:s.reps,unit:s.unit||last.unit||unit,feel:""})));
   }
   function copyDaySummary(ds) {
     const sessions=log[ds]||[], d=new Date(ds+"T00:00:00");
@@ -755,7 +755,7 @@ export default function FitnessTracker() {
               </div>
               {lastExpanded&&(
                 <>
-                  {(last.sets||[]).map((s,i)=><div key={i} style={{fontSize:18,color:C.muted,marginBottom:2,marginTop:6}}>{isBW?`第${i+1}組：${s.reps}次`:`第${i+1}組：${s.weight} ${s.unit||last.unit||"kg"} × ${s.reps}次`}</div>)}
+                  {(last.sets||[]).map((s,i)=><div key={i} style={{fontSize:18,color:C.muted,marginBottom:2,marginTop:6}}>{isBW?`第${i+1}組：${s.reps}次`:`第${i+1}組：${s.weight} ${s.unit||last.unit||"kg"} × ${s.reps}次`}{s.feel&&<span style={{marginLeft:6}}>{s.feel}</span>}</div>)}
                   <button style={{...css.smBtn("#60a5fa"),marginTop:8,fontSize:18}} onClick={()=>applyLastSession(last)}>套用上次作為起點</button>
                 </>
               )}
@@ -795,6 +795,15 @@ export default function FitnessTracker() {
               </div>
               <input style={{...css.input,marginTop:6,width:"100%",flex:"none"}} type="number" placeholder="自訂次數" value={set.reps}
                 onChange={e=>setSets(p=>p.map((s,j)=>j===i?{...s,reps:e.target.value}:s))}/>
+              {/* 感受評分 */}
+              <div style={{display:"flex",gap:6,marginTop:10,justifyContent:"center"}}>
+                {["😁","🙂","😐","😥","😓"].map(f=>(
+                  <button key={f} onClick={()=>setSets(p=>p.map((s,j)=>j===i?{...s,feel:s.feel===f?"":f}:s))}
+                    style={{fontSize:24,background:set.feel===f?"rgba(96,165,250,0.25)":"transparent",border:`2px solid ${set.feel===f?C.accent:"transparent"}`,borderRadius:10,padding:"4px 8px",cursor:"pointer",transition:"all 0.15s"}}>
+                    {f}
+                  </button>
+                ))}
+              </div>
             </div>
           ))}
         </div>
