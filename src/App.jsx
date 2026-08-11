@@ -356,7 +356,7 @@ export default function FitnessTracker() {
       const t=typeInfo(s.type);
       text+=`${t?.emoji} ${t?.label}｜${s.exercise}\n`;
       if(s.isCardio&&s.cardio) text+=`  坡度 ${s.cardio.incline}%・速度 ${s.cardio.speed}kph・${s.cardio.duration}分鐘\n`;
-      else (s.sets||[]).forEach((st,i)=>{ text+=s.isBodyweight?`  第${i+1}組：${st.reps}次\n`:`  第${i+1}組：${st.weight} ${st.unit||s.unit||"kg"} × ${st.reps}次\n`; });
+      else (s.sets||[]).forEach((st,i)=>{ text+=s.isBodyweight?`  第${i+1}組：${st.reps}次${st.feel?" "+st.feel:""}\n`:`  第${i+1}組：${st.weight} ${st.unit||s.unit||"kg"} × ${st.reps}次${st.feel?" "+st.feel:""}\n`; });
       if(s.duration) text+=`  ⏱ 訓練時長：${s.duration}分鐘\n`;
       if(idx<sessions.length-1) text+="\n";
     });
@@ -797,7 +797,7 @@ export default function FitnessTracker() {
                 onChange={e=>setSets(p=>p.map((s,j)=>j===i?{...s,reps:e.target.value}:s))}/>
               {/* 感受評分 */}
               <div style={{display:"flex",gap:6,marginTop:10,justifyContent:"center"}}>
-                {["😁","🙂","😐","😥","😓"].map(f=>(
+                {["🥇","🥈","🥉"].map(f=>(
                   <button key={f} onClick={()=>setSets(p=>p.map((s,j)=>j===i?{...s,feel:s.feel===f?"":f}:s))}
                     style={{fontSize:24,background:set.feel===f?"rgba(96,165,250,0.25)":"transparent",border:`2px solid ${set.feel===f?C.accent:"transparent"}`,borderRadius:10,padding:"4px 8px",cursor:"pointer",transition:"all 0.15s"}}>
                     {f}
